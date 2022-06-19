@@ -12,9 +12,20 @@
 
 #include "../includes/philosophers.h"
 
-t_philosopher	*lstlast(t_philosopher *lst)
+t_philo	*ft_lstnew(void)
 {
-	t_philosopher	*last;
+	t_philo	*lst;
+
+	lst = (t_philo *) ft_calloc(1, sizeof(t_philo));
+	if (!lst)
+		return (NULL);
+	lst->next = NULL;
+	return (lst);
+}
+
+t_philo	*lstlast(t_philo *lst)
+{
+	t_philo	*last;
 
 	if (lst == NULL)
 		return (lst);
@@ -24,9 +35,9 @@ t_philosopher	*lstlast(t_philosopher *lst)
 	return (last);
 }
 
-void	lstadd_back(t_philosopher **lst, t_philosopher *new)
+void	lstadd_back(t_philo **lst, t_philo *new)
 {
-	t_philosopher	*last;
+	t_philo	*last;
 
 	if (lst == NULL)
 		return ;
@@ -38,3 +49,5 @@ void	lstadd_back(t_philosopher **lst, t_philosopher *new)
 	else
 		*lst = new;
 }
+
+

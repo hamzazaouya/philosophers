@@ -1,6 +1,6 @@
 NAME = philosophers
 HEADER = philosophers.h
-SOURCES = philosophers.c ft_lstadd_back_bonus.c
+SOURCES = philosophers.c aid_funct1.c main.c
 SRC_PATH = src
 OBJ_PATH  = objs
 OBJ_PATH_B = objs_b
@@ -8,7 +8,7 @@ LIB_PATH = includes/libft
 LIB = $(LIB_PATH)/libft.a
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS = $(addprefix $(SRC_PATH)/,$(SOURCES))
 OBJS = $(addprefix $(OBJ_PATH)/,$(SOURCES:.c=.o))
@@ -23,10 +23,10 @@ $(LIB):
 
 
 $(NAME) : $(OBJS) $(LIB)
-	$(CC)  $(OBJS) $(LIB) -o $(NAME)
+	$(CC) $(CFLAGS)  $(OBJS) $(LIB) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c includes/$(HEADER)
-	@$(CC)  -c -o $@ $<
+	@$(CC) $(CFLAGS)  -c -o $@ $<
 
 $(OBJ_PATH):
 	@mkdir objs

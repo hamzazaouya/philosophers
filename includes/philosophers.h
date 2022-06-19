@@ -7,30 +7,38 @@
 # include <sys/time.h>
 # include "libft/libft.h"
 
-typedef struct philosopher {
-	long			t_die;
-	int				t_eat;
-	int				t_sleep;
-	int				position;
-	pthread_mutex_t left_fork;
-	pthread_mutex_t right_fork;
-	struct philosopher *next;
-}t_philosopher;
-
-
+struct philosopher;
 
 typedef struct phdata
 {
 	pthread_mutex_t	*mutex;
-	t_philosopher	*philosopher;
+	struct philosopher	*philo;
 	int	philo_num;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
+	int	t_die;
+	int	t_eat;
+	int	t_sleep;
 	int	eat_num;
+	long	t_start;
+	pthread_mutex_t print;
 }	t_phdata;
 
-void	lstadd_back(t_philosopher **lst, t_philosopher *new);
-long	ft_get_time();
+typedef struct philosopher {
+	int				id;
+	int				is_eating;
+	long			last_eat;
+	int				nb_eat;
+	t_phdata		*phdata;
+	pthread_t		thr;
+	int				left_fork;
+	int				right_fork;
+	struct philosopher *next;
+}	t_philo;
+
+
+void	lstadd_back(t_philo **lst, t_philo *new);
+t_philo	*lstlast(t_philo *lst);
+t_philo	*ft_lstnew(void);
+long	get_time();
+void	ft_philos(t_phdata *phdata);
 
 #endif
