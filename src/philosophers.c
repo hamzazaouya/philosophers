@@ -1,117 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosophers.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hazaouya <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/21 16:08:44 by hazaouya          #+#    #+#             */
+/*   Updated: 2022/06/21 19:28:23 by hazaouya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philosophers.h"
 
-void	ft_usleep(int k)
-{
-	long res;
-
-	res = get_time() + k;
-	while (get_time() < res)
-		usleep(100);
-}
-
-void	printf_msg(t_philo *philo, char *s)
+void	print_msg(t_philo *philo, char *msg)
 {
 	pthread_mutex_lock(&philo->phdata->print);
-	printf("%ld ms %d %s\n", get_time() - philo->phdata->t_start, philo->id, s);
+	printf("%ld %d %s\n", get_time() - philo->phdata->t_start, philo->id, msg);
 	pthread_mutex_unlock(&philo->phdata->print);
 }
 
-void	take_forks(t_philo *philo)
+void	ft_usleep(long time)
 {
-	pthread_mutex_lock(&philo->phdata->mutex[philo->left_fork]);
-	printf_msg(philo, "has taken a left fork ");
-	pthread_mutex_lock(&philo->phdata->mutex[philo->right_fork]);
-	printf_msg(philo,"has taken a right fork ");
+	while (get_time() < time)
+		usleep(100);
 }
 
-void	puts_forks(t_philo *philo)
+int	control_eating(t_phdata *phdata)
 {
-	pthread_mutex_unlock(&philo->phdata->mutex[philo->left_fork]);
-	pthread_mutex_unlock(&philo->phdata->mutex[philo->right_fork]);
+	int	i;
+
+	i = 0;
+	while (i < phdata->philo_num)
+	{
+		pthread_mutex_lock(&phdata->philo[i].le_chr);
+		if (phdata->philo[i].nb_eat != phdata->eat_num)
+		{
+			pthread_mutex_unlock(&phdata->philo[i].le_chr);
+			return (0);
+		}
+		pthread_mutex_unlock(&phdata->philo[i].le_chr);
+		i++;
+	}
+	return (1);
 }
 
-void	eating(t_philo *philo)
+void	ft_supervisor(t_phdata *phdata)
 {
-	philo->last_eat = get_time();
-	printf_msg(philo, "is eating");
-	philo->nb_eat++;
-	philo->is_eating = 1;
-	ft_usleep(philo->phdata->t_eat);
-	philo->is_eating = 0;
-	puts_forks(philo);
-}
+	int	i;
 
-void	sleeping(t_philo *philo)
-{
-	printf_msg(philo, "is sleeping");
-	ft_usleep(philo->phdata->t_sleep);
-	printf_msg(philo, "is thinkig");
-}
-
-void	*routine(void *arg)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)arg;
 	while (1)
 	{
-		take_forks(philo);
-		eating(philo);
-		sleeping(philo);
+		i = 0;
+		while (i < phdata->philo_num)
+		{
+			pthread_mutex_lock(&phdata->philo[i].le_chr);
+			if (get_time() - phdata->philo[i].last_eat >= phdata->t_die \
+					&& !phdata->philo[i].is_eating)
+			{
+				pthread_mutex_lock(&phdata->print);
+				printf("%ld %d %s\n", get_time() - phdata->t_start, \
+						phdata->philo[i].id, "died");
+				return ;
+			}
+			pthread_mutex_unlock(&phdata->philo[i].le_chr);
+			i++;
+		}
+		if (phdata->eat_num != -1)
+			if (control_eating(phdata))
+				return ;
+		usleep(500);
 	}
-	return (NULL);
 }
 
 void	ft_philos(t_phdata *phdata)
 {
-    int i;
-	t_philo *temp;
-	t_philo *temp2;
+	int	i;
 
-    i = 0;
-	temp = phdata->philo;
-    while(i < phdata->philo_num)
-    {        
-        pthread_create(&temp->thr, NULL, routine, temp);
-		temp = temp->next;
+	i = 0;
+	while (i < phdata->philo_num)
+	{
+		pthread_create(&phdata->philo[i].thr, NULL, routine, phdata->philo + i);
 		usleep(100);
 		i++;
-    }
-	i = 0;
-	int count;
-	while (1)
-	{
-		i = 0;
-		temp = phdata->philo;
-		while (i < phdata->philo_num)
-		{
-			if (get_time() - temp->last_eat >= phdata->t_die)
-			{
-				printf_msg(temp, "Die");
-				return ;
-			}
-			temp = temp->next;
-			i++;
-		}
-		i = 0;
-		count = 0;
-		temp2 = phdata->philo;
-		while (i < phdata->philo_num && temp->phdata->eat_num != -1)
-		{
-			if (temp2->nb_eat == temp2->phdata->eat_num)
-				count++;
-			i++;
-			temp2 = temp2->next;
-		}
-		if (count == phdata->philo->nb_eat)
-			return ;
 	}
-	
-	while(i < phdata->philo_num)
-    {
-        pthread_join(temp->thr, NULL);
-		temp = temp->next;
-		i++;
-    }
-
+	ft_supervisor(phdata);
+	return ;
 }

@@ -1,14 +1,12 @@
 NAME = philosophers
 HEADER = philosophers.h
-SOURCES = philosophers.c aid_funct1.c main.c
+SOURCES = philosophers.c aid_funct1.c main.c routine.c
 SRC_PATH = src
 OBJ_PATH  = objs
 OBJ_PATH_B = objs_b
-LIB_PATH = includes/libft
-LIB = $(LIB_PATH)/libft.a
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread
 
 SRCS = $(addprefix $(SRC_PATH)/,$(SOURCES))
 OBJS = $(addprefix $(OBJ_PATH)/,$(SOURCES:.c=.o))
@@ -18,11 +16,8 @@ OBJS_B = $(addprefix $(OBJ_PATH_B)/,$(SOURCES_B:.c=.o))
 
 all : $(OBJ_PATH) $(NAME)
 
-$(LIB):
-	@cd $(LIB_PATH) && make && make clean
 
-
-$(NAME) : $(OBJS) $(LIB)
+$(NAME) : $(OBJS)
 	$(CC) $(CFLAGS)  $(OBJS) $(LIB) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c includes/$(HEADER)
@@ -36,6 +31,5 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-	@cd $(LIB_PATH) && make fclean
 	rm -fr $(OBJ_PATH)
 re : fclean all

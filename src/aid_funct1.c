@@ -1,53 +1,83 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lstadd_back.c                                      :+:      :+:    :+:   */
+/*   aid_funct1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hazaouya <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/07 13:19:28 by hazaouya          #+#    #+#             */
-/*   Updated: 2021/11/22 15:07:24 by hazaouya         ###   ########.fr       */
+/*   Created: 2022/06/21 16:02:59 by hazaouya          #+#    #+#             */
+/*   Updated: 2022/06/21 16:08:10 by hazaouya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
 
-t_philo	*ft_lstnew(void)
+void	ft_bzero(void *s, size_t n)
 {
-	t_philo	*lst;
+	size_t			i;
+	unsigned char	*str;
 
-	lst = (t_philo *) ft_calloc(1, sizeof(t_philo));
-	if (!lst)
-		return (NULL);
-	lst->next = NULL;
-	return (lst);
-}
-
-t_philo	*lstlast(t_philo *lst)
-{
-	t_philo	*last;
-
-	if (lst == NULL)
-		return (lst);
-	last = lst;
-	while (last->next)
-		last = last->next;
-	return (last);
-}
-
-void	lstadd_back(t_philo **lst, t_philo *new)
-{
-	t_philo	*last;
-
-	if (lst == NULL)
-		return ;
-	if (*lst)
+	i = 0;
+	str = (unsigned char *)s;
+	while (i < n)
 	{
-		last = lstlast(*lst);
-		last->next = new;
+		str[i] = 0;
+		i++;
 	}
-	else
-		*lst = new;
 }
 
+void	*ft_calloc(size_t count, size_t size)
+{
+	void			*ptr;
 
+	ptr = (void *) malloc(count * size);
+	if (!ptr)
+		return (NULL);
+	ft_bzero(ptr, size * count);
+	return (ptr);
+}
+
+long long	ft_num(const char *str)
+{
+	long long	nb;	
+	int			i;
+
+	i = 0;
+	nb = 0;
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		nb *= 10;
+		nb += str[i] - '0';
+		i++;
+	}
+	return (nb);
+}
+
+int	ft_check(char sign)
+{
+	if (sign > 0)
+		return (-1);
+	return (0);
+}
+
+int	ft_atoi(const char *str)
+{
+	long long	nb;
+	int			i;
+	int			sign;
+
+	i = 0;
+	sign = 1;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '+' || str[i] == '-')
+	{
+		if (str[i] == '-')
+			sign *= -1;
+		i++;
+	}
+	nb = ft_num(str + i);
+	if (nb < 0)
+		return (ft_check(sign));
+	return ((int )nb * sign);
+}
