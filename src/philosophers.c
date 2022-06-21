@@ -33,7 +33,7 @@ int	control_eating(t_phdata *phdata)
 	while (i < phdata->philo_num)
 	{
 		pthread_mutex_lock(&phdata->philo[i].le_chr);
-		if (phdata->philo[i].nb_eat != phdata->eat_num)
+		if (phdata->philo[i].nb_eat < phdata->eat_num)
 		{
 			pthread_mutex_unlock(&phdata->philo[i].le_chr);
 			return (0);
