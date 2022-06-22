@@ -1,4 +1,4 @@
-NAME = philosophers
+NAME = philo
 HEADER = philosophers.h
 SOURCES = philosophers.c aid_funct1.c main.c routine.c
 SRC_PATH = src
