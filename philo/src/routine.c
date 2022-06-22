@@ -15,9 +15,8 @@
 void	lock_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->phdata->forks + philo->left_fork);
-	print_msg(philo, "has taken a left fork");
 	pthread_mutex_lock(philo->phdata->forks + philo->right_fork);
-	print_msg(philo, "has taken a right fork");
+	print_msg(philo, "has taken a fork");
 }
 
 void	unlock_forks(t_philo *philo)

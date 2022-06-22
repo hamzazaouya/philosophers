@@ -22,7 +22,7 @@ void	print_msg(t_philo *philo, char *msg)
 void	ft_usleep(long time)
 {
 	while (get_time() < time)
-		usleep(100);
+		usleep(250);
 }
 
 int	control_eating(t_phdata *phdata)
@@ -80,7 +80,7 @@ void	ft_philos(t_phdata *phdata)
 	while (i < phdata->philo_num)
 	{
 		pthread_create(&phdata->philo[i].thr, NULL, routine, phdata->philo + i);
-		usleep(100);
+		usleep(50);
 		i++;
 	}
 	ft_supervisor(phdata);

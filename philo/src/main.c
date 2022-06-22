@@ -95,7 +95,10 @@ int	main(int argc, char **argv)
 	if (argc == 5 || argc == 6)
 	{
 		if (!ft_init(argv, phdata))
+		{
+			write(1, "Error\n", 6);
 			return (0);
+		}
 		ft_philos(phdata);
 	}
 	return (0);
