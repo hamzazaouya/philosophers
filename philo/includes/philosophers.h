@@ -46,12 +46,12 @@ typedef struct s_philosopher {
 	pthread_mutex_t	le_chr;
 }	t_philo;
 
-int		ft_atoi(const char *str);
 long	get_time(void);
 void	ft_philos(t_phdata *phdata);
 void	*ft_calloc(size_t count, size_t size);
 void	*routine(void *arg);
 void	print_msg(t_philo *philo, char *msg);
 void	ft_usleep(long time);
+int		ft_atoi(const char *str);
 
 #endif

@@ -1,12 +1,12 @@
 NAME = philo
 HEADER = philosophers.h
-SOURCES = philosophers.c aid_funct1.c main.c routine.c
+SOURCES = philosophers.c aid_funct1.c main.c routine.c aid_funct2.c
 SRC_PATH = src
 OBJ_PATH  = objs
 OBJ_PATH_B = objs_b
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS = $(addprefix $(SRC_PATH)/,$(SOURCES))
 OBJS = $(addprefix $(OBJ_PATH)/,$(SOURCES:.c=.o))

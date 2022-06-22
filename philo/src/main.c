@@ -12,14 +12,6 @@
 
 #include "../includes/philosophers.h"
 
-long	get_time(void)
-{
-	struct timeval	current_time;
-
-	gettimeofday(&current_time, NULL);
-	return (current_time.tv_sec * 1000 + current_time.tv_usec / 1000);
-}
-
 t_philo	*creat_philos(t_phdata *phdata)
 {
 	int		i;
@@ -60,8 +52,24 @@ pthread_mutex_t	*ft_create_mutex(t_phdata *phdata)
 	return (phdata->forks);
 }
 
-void	ft_init(char **argv, t_phdata *phdata)
+int	ft_check_args(char **argv)
 {
+	int	i;
+
+	i = 1;
+	while (argv[i])
+	{
+		if (!ft_atoi(argv[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	ft_init(char **argv, t_phdata *phdata)
+{
+	if (!ft_check_args(argv))
+		return (0);
 	phdata->philo_num = ft_atoi(argv[1]);
 	phdata->t_die = ft_atoi(argv[2]);
 	phdata->t_eat = ft_atoi(argv[3]);
@@ -74,8 +82,9 @@ void	ft_init(char **argv, t_phdata *phdata)
 	phdata->forks = ft_create_mutex(phdata);
 	phdata->t_start = get_time();
 	if (!phdata->forks)
-		return ;
+		return (1);
 	phdata->philo = creat_philos(phdata);
+	return (1);
 }
 
 int	main(int argc, char **argv)
@@ -83,12 +92,11 @@ int	main(int argc, char **argv)
 	t_phdata	*phdata;
 
 	phdata = malloc(sizeof(t_phdata));
-	if (argc > 4)
+	if (argc == 5 || argc == 6)
 	{
-		ft_init(argv, phdata);
+		if (!ft_init(argv, phdata))
+			return (0);
 		ft_philos(phdata);
 	}
-	else
-		printf("Less Argument \n");
 	return (0);
 }

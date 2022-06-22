@@ -73,10 +73,15 @@ int	ft_atoi(const char *str)
 	if (str[i] == '+' || str[i] == '-')
 	{
 		if (str[i] == '-')
+		{
 			sign *= -1;
+			return (0);
+		}
 		i++;
 	}
 	nb = ft_num(str + i);
+	if (nb > 2147483647)
+		return (0);
 	if (nb < 0)
 		return (ft_check(sign));
 	return ((int )nb * sign);
